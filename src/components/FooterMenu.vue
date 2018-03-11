@@ -2,7 +2,7 @@
   <div class="footer-wrapper">
     <footer class="footer">
     <p class="footer-text">© {{yearOfProject}} Cryptocurrency Converter Calculator</p>
-    <p class="footer-text">Made by 
+    <p class="footer-text">Made by
       <a class="footer-link" href="github.com/volkova-annie" target="_blank">Annie Volkova</a>
     </p>
     </footer>
@@ -41,6 +41,9 @@ export default {
     display: flex;
     justify-content: center;
     background-color: black;
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 
   &-link {
