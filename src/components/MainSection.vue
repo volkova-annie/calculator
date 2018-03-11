@@ -25,12 +25,12 @@
       <div v-else-if="rate && currencyAmount" class="row">
         <div class="currency">
           <span class="currency-ammount">{{currencyAmount}}</span>
-          <span class="currency-label"> {{assetIdBaseLabel}}</span>
+          <span class="currency-label"> {{assetBaseLabel}}</span>
         </div>
         <span class="currency-equal"> = </span>
         <div class="currency">
           <span class="currency-ammount"> {{rateMultiplication}}</span>
-          <span class="currency-label"> {{assetIdQuoteLabel}}</span>
+          <span class="currency-label"> {{assetQuoteLabel}}</span>
         </div>
       </div>
       <div class="chart-wrapper">
@@ -60,10 +60,10 @@ export default {
   },
   data () {
     return {
-      assetIdBase: '',
-      assetIdQuote: '',
-      assetIdBaseLabel: '',
-      assetIdQuoteLabel: '',
+      assetBaseId: '',
+      assetQuoteId: '',
+      assetBaseLabel: '',
+      assetQuoteLabel: '',
       exchangeRates: [],
       rate: '',
       currencyAmount: '1',
@@ -81,26 +81,26 @@ export default {
       const selectBase = this.$refs.base.$refs.currency
       const selectQuote = this.$refs.quote.$refs.currency
 
-      this.assetIdBase = selectBase.value
-      this.assetIdQuote = selectQuote.value
+      this.assetBaseId = selectBase.value
+      this.assetQuoteId = selectQuote.value
 
-      this.assetIdBaseLabel = selectBase.label
-      this.assetIdQuoteLabel = selectQuote.label
+      this.assetBaseLabel = selectBase.label
+      this.assetQuoteLabel = selectQuote.label
     },
     saveIdBase: function (event) {
-      this.assetIdBase = event.value
-      this.assetIdBaseLabel = event.label
+      this.assetBaseId = event.value
+      this.assetBaseLabel = event.label
 
       this.updateRates()
     },
     saveIdQuote: function (event) {
-      this.assetIdQuote = event.value
-      this.assetIdQuoteLabel = event.label
+      this.assetQuoteId = event.value
+      this.assetQuoteLabel = event.label
 
       this.updateRates()
     },
     updateRates: function () {
-      if (this.assetIdQuote !== this.assetIdBase) {
+      if (this.assetQuoteId && this.assetBaseId && this.assetQuoteId !== this.assetBaseId) {
         this.fetchCurrentRate()
         this.fetchRateHistory()
       }
@@ -108,16 +108,20 @@ export default {
       this.checkErrors()
     },
     fetchCurrentRate: function () {
-      exchange.getExchangeRate(this.assetIdQuote, this.assetIdBase)
+      exchange.getExchangeRate(this.assetQuoteId, this.assetBaseId)
         .then((response) => {
           this.rate = Object.values(response)[0]
+
+          if (response.Response === 'Error') {
+            this.checkErrors(response.Message)
+          }
         })
         .catch((error) => {
           console.log(error)
         })
     },
     fetchRateHistory: function () {
-      exchange.getWeekExchangeRate(this.assetIdQuote, this.assetIdBase)
+      exchange.getWeekExchangeRate(this.assetQuoteId, this.assetBaseId)
         .then((response) => {
           const rateHistoryList = response.Data.map((el) => {
             return {
@@ -135,11 +139,10 @@ export default {
               const dateResult = dd + '.' + mm + '.' + yy
 
               return dateResult
-            }
-            ),
+            }),
             datasets: [
               {
-                label: this.assetIdQuote + ' for ' + this.assetIdBase,
+                label: this.assetQuoteId + ' for ' + this.assetBaseId,
                 backgroundColor: '#0088CC',
                 fill: false,
                 data: rateHistoryList.map((el) => el.rate)
@@ -151,15 +154,15 @@ export default {
           console.log(error)
         })
     },
-    checkErrors: function () {
-      this.error = ''
+    checkErrors: function (message = '') {
+      this.error = message
 
-      if (this.assetIdQuote === this.assetIdBase) {
-        this.error = 'You chose the same currencies'
-      } else if (!this.assetIdBase) {
-        this.error = 'Please, select the currency convert from'
-      } else if (!this.assetIdQuote) {
-        this.error = 'Please, select the currency convert to'
+      if (this.assetQuoteId === this.assetBaseId) {
+        this.error = 'You chose the same currencies.'
+      } else if (!this.assetBaseId) {
+        this.error = 'Please, select the currency convert from.'
+      } else if (!this.assetQuoteId) {
+        this.error = 'Please, select the currency convert to.'
       }
     },
     swapCurrency: function () {
@@ -169,6 +172,7 @@ export default {
 
       selectBase.selectedIndex = selectQuote.selectedIndex
       selectQuote.selectedIndex = tempIndex
+
       selectBase.dispatchEvent(new Event('change'))
       selectQuote.dispatchEvent(new Event('change'))
     }
