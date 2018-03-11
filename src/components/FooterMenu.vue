@@ -1,6 +1,10 @@
 <template>
   <div class="footer-wrapper">
-    <footer class="footer"> this is footer
+    <footer class="footer">
+    <p class="footer-text">© {{yearOfProject}} Cryptocurrency Converter Calculator</p>
+    <p class="footer-text">Made by 
+      <a class="footer-link" href="github.com/volkova-annie" target="_blank">Annie Volkova</a>
+    </p>
     </footer>
   </div>
 </template>
@@ -15,7 +19,7 @@ export default {
   computed: {
     yearOfProject () {
       const year = new Date().getFullYear()
-      this.yearInFooter = (year > 2017 ? `2017-${year}` : '2017')
+      this.yearInFooter = (year > 2018 ? `2018-${year}` : '2018')
       return this.yearInFooter
     }
   }
@@ -24,18 +28,25 @@ export default {
 
 <style lang="scss">
 
-.footer-wrapper {
-  background-color: black;
-}
-
 .footer {
+  color: white;
+  max-width: 1140px;
   width: calc(100% - 40px);
-  max-width: 1170px;
-  padding: 30px 0 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin: auto;
+  justify-content: space-around;
+
+  &-wrapper{
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    background-color: black;
+  }
+
+  &-link {
+    color: white;
+    text-decoration: none;
+  }
 }
 
 </style>

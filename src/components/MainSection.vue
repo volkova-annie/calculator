@@ -1,26 +1,47 @@
 <template lang="html">
   <div>
     <main class="main">
-      <input type="number" placeholder="Enter Amount to Convert" v-model="currencyAmount"  min="0">
-      <select-custom ref="base" v-bind:exchangeAssets="exchangeRates" v-on:selected="saveIdBase"></select-custom>
-      <button type="button" class="button-swap-currency" v-on:click="swapCurrency">
-        <=>
-      </button>
-      <select-custom
-        ref="quote"
-        v-bind:exchangeAssets="exchangeRates"
-        v-on:selected="saveIdQuote">
-      </select-custom>
-      <span v-if="error">{{error}}</span>
-      <div v-else-if="rate" class="row">
-        <div id="conversion-result-left">{{currencyAmount}} {{assetIdBaseLabel}}</div>
-        <div id="conversion-result-middle"> = </div>
-
-        <span id="conversion-result-value">{{rateMultiplication}}</span>
-        <span id="conversion-result-value-currency">{{assetIdQuoteLabel}}</span>
+      <div class="row">
+        <input type="number" placeholder="Enter Amount to Convert" v-model="currencyAmount"  min="0">
       </div>
+      <div class="row">
+        <select-custom
+          ref="base"
+          v-bind:exchangeAssets="exchangeRates"
+          v-on:selected="saveIdBase">
+        </select-custom>
+        <button type="button" class="button-swap-currency" v-on:click="swapCurrency">
+          ⇄
+        </button>
+        <select-custom
+          ref="quote"
+          v-bind:exchangeAssets="exchangeRates"
+          v-on:selected="saveIdQuote">
+        </select-custom>
+      </div>
+      <div v-if="error" class="row">
+        <span class="error-text">{{error}}</span>
+      </div>
+      <div v-else-if="rate" class="row">
+        <div class="currency">
+          <span class="currency-ammount">{{currencyAmount}}</span>
+          <span class="currency-label"> {{assetIdBaseLabel}}</span>
+        </div>
+        <span class="currency-equal"> = </span>
+        <div class="currency">
+          <span class="currency-ammount"> {{rateMultiplication}}</span>
+          <span class="currency-label"> {{assetIdQuoteLabel}}</span>
+        </div>
+      </div>
+    <h3 class="chart-header">Currency Exchange Rate Chart</h3>
+    <chart-custom
+      class="chart"
+      :options="{responsive: false, maintainAspectRatio: false}"
+      :chart-data="ratesChartData"
+      :width="800"
+      :height="200">
+    </chart-custom>
     </main>
-    <chart-custom ref="chart" :options="{responsive: false}" :width="400" :height="200"></chart-custom>
   </div>
 </template>
 
@@ -44,12 +65,13 @@ export default {
       exchangeRates: [],
       rate: '',
       currencyAmount: '1',
-      error: ''
+      error: '',
+      ratesChartData: []
     }
   },
   computed: {
     rateMultiplication () {
-      return this.currencyAmount * this.rate
+      return (this.currencyAmount * this.rate).toFixed(10)
     }
   },
   methods: {
@@ -101,7 +123,27 @@ export default {
               rate: el.close
             }
           })
-          this.$refs.chart.updateChart(rateHistoryList)
+
+          this.ratesChartData = {
+            labels: rateHistoryList.map((el) => {
+              const date = new Date(el.date * 1000)
+              const dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate()
+              const mm = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1)
+              const yy = date.getFullYear()
+              const dateResult = dd + '.' + mm + '.' + yy
+
+              return dateResult
+            }
+            ),
+            datasets: [
+              {
+                label: this.assetIdQuote + ' for ' + this.assetIdBase,
+                backgroundColor: '#0088CC',
+                fill: false,
+                data: rateHistoryList.map((el) => el.rate)
+              }
+            ]
+          }
         })
         .catch((error) => {
           console.log(error)
@@ -111,11 +153,11 @@ export default {
       this.error = ''
 
       if (this.assetIdQuote === this.assetIdBase) {
-        this.error = 'Вы ввели одинаковые валюты'
+        this.error = 'You chose the same currencies'
       } else if (!this.assetIdBase) {
-        this.error = 'Выберите валюту, из которой необходимо конвертировать'
+        this.error = 'Please, select the currency convert from'
       } else if (!this.assetIdQuote) {
-        this.error = 'Выберите валюту, в которую необходимо конвертировать'
+        this.error = 'Please, select the currency convert to'
       }
     },
     swapCurrency: function () {
@@ -156,7 +198,68 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-height: 680px;
-  padding: 13% 0;
+  padding: 40px 0;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  margin: auto;
+  max-width: 1140px;
+  width: 830px;
+  margin-bottom: 20px;
+}
+
+.error-text {
+  color: red;
+}
+
+.button-swap-currency {
+  background-color: #0088CC;
+  color: white;
+  width: 60px;
+  height: 35px;
+  margin: 0 10px;
+  font-size: 20px;
+  border-radius: 4px;
+}
+
+.chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+
+  &-header {
+    margin-top: 50px;
+  }
+}
+
+.currency {
+  width: 375px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: baseline;
+
+  &:first-child {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &-equal {
+    width: 60px;
+    margin: 0 10px;
+    text-align: center;
+  }
+
+  &-label {
+    color: green;
+    font-size: 1rem;
+  }
+
+  &-ammount {
+    font-weight: bold;
+    margin-right: 10px;
+  }
 }
 </style>
