@@ -15,24 +15,6 @@ export default {
   components: {
     HeaderMenu,
     FooterMenu
-  },
-  watch: {
-    '$route' (to, from) {
-      if (!to.hash) {
-        return true
-      }
-      setTimeout(() => {
-        let selector = document.querySelector(to.hash)
-        if (selector) {
-          selector.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          })
-        }
-      }, 100)
-
-      return true
-    }
   }
 }
 </script>
