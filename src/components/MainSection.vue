@@ -2,7 +2,7 @@
   <div>
     <main class="main">
       <div class="row">
-        <input type="number" placeholder="Enter Amount to Convert" v-model="currencyAmount"  min="0">
+        <input type="number" placeholder="Enter Amount to Convert" v-model="currencyAmount" min="0">
       </div>
       <div class="row">
         <select-custom
@@ -22,7 +22,7 @@
       <div v-if="error" class="row">
         <span class="error-text">{{error}}</span>
       </div>
-      <div v-else-if="rate" class="row">
+      <div v-else-if="rate && currencyAmount" class="row">
         <div class="currency">
           <span class="currency-ammount">{{currencyAmount}}</span>
           <span class="currency-label"> {{assetIdBaseLabel}}</span>
@@ -33,14 +33,16 @@
           <span class="currency-label"> {{assetIdQuoteLabel}}</span>
         </div>
       </div>
-    <h3 class="chart-header">Currency Exchange Rate Chart</h3>
-    <chart-custom
-      class="chart"
-      :options="{responsive: false, maintainAspectRatio: false}"
-      :chart-data="ratesChartData"
-      :width="800"
-      :height="200">
-    </chart-custom>
+      <div class="chart-wrapper">
+        <h3 class="chart-header">Currency Exchange Rate Chart</h3>
+        <chart-custom
+          class="chart"
+          :options="{responsive: false, maintainAspectRatio: false}"
+          :chart-data="ratesChartData"
+          :width="800"
+          :height="200">
+        </chart-custom>
+      </div>
     </main>
   </div>
 </template>
@@ -208,6 +210,10 @@ export default {
   max-width: 1140px;
   width: 830px;
   margin-bottom: 20px;
+
+  &:nth-child(2) {
+    position: relative;
+  }
 }
 
 .error-text {
@@ -228,7 +234,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 40px 0;
+
+  &-wrapper {
+    // position: absolute;
+    // top: 120px;
+    // margin: 40px 0;
+  }
 
   &-header {
     margin-top: 50px;
