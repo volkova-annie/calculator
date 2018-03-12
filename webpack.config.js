@@ -11,9 +11,13 @@ function resolve (dir) {
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '',
-    filename: '[name].[hash:8].js'
+    path: process.env.NODE_ENV === 'production'
+      ? path.resolve(__dirname, './dist/dist/')
+      : path.resolve(__dirname, './dist/'),
+    publicPath: '/dist/',
+    filename: process.env.NODE_ENV === 'production'
+      ? '[name].[hash:8].js'
+      : '[name].js'
   },
   module: {
     rules: [
@@ -79,12 +83,6 @@ module.exports = {
     new CleanWebpackPlugin(['build']),
     new webpack.ProvidePlugin({
       Vue: ['vue/dist/vue.esm.js', 'default']
-    }),
-    new HtmlWebpackPlugin({
-      filename: './index.html',
-      template: 'index.html',
-      inject: true,
-      chunksSortMode: 'dependency'
     })
   ],
   resolve: {
@@ -95,10 +93,7 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    port: 8080,
-    // headers: {
-    //   'Access-Control-Allow-Origin': '*'
-    // },
+    port: 8080
     // proxy: {
     //   "/api": {
     //     "target": 'https://cryptocompare.com',
@@ -106,14 +101,21 @@ module.exports = {
     //     // "changeOrigin": true,
     //     // "secure": false,
     //     // "origin": 'https://cryptocompare.com'
+    //   },
+    //   "/data": {
+    //     "target": 'https://min-api.cryptocompare.com/',
+    //     "pathRewrite": { '^/api': '' }
+    //     // "changeOrigin": true,
+    //     // "secure": false,
+    //     // "origin": 'https://min-api.cryptocompare.com/'
     //   }
+    // },
+    // headers: {
+    //   'Access-Control-Allow-Origin': '*',
+    //   'Access-Control-Allow-Credentials': 'true',
+    //   'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-id, Content-Length, X-Requested-With',
+    //   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
     // }
-    headers: {
-	    "Access-Control-Allow-Origin": "*",
-	    "Access-Control-Allow-Credentials": "true",
-	    "Access-Control-Allow-Headers": "Content-Type, Authorization, x-id, Content-Length, X-Requested-With",
-	    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
-	}
   },
   performance: {
     hints: false
@@ -138,6 +140,12 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
+    }),
+    new HtmlWebpackPlugin({
+      filename: '../index.html',
+      template: 'index.html',
+      inject: true,
+      chunksSortMode: 'dependency'
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',

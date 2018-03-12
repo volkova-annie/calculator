@@ -43,7 +43,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [
-          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'src')
         ],
         exclude: /node_modules/
       },
@@ -69,7 +69,7 @@ module.exports = {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[ext]',
+          name: '[name].[ext]'
           // name: '[name].[ext]?[hash]',
           // useRelativePath: process.env.NODE_ENV === "production"
         }
