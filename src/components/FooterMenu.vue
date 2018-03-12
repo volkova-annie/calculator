@@ -41,7 +41,7 @@ export default {
     display: flex;
     justify-content: center;
     background-color: black;
-    position: absolute;
+    position: static;
     bottom: 0;
     left: 0;
   }
