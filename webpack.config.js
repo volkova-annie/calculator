@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '.', dir)
@@ -11,8 +12,8 @@ module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
-    filename: '[name].js'
+    publicPath: '',
+    filename: '[name].[hash:8].js'
   },
   module: {
     rules: [
@@ -78,6 +79,12 @@ module.exports = {
     new CleanWebpackPlugin(['build']),
     new webpack.ProvidePlugin({
       Vue: ['vue/dist/vue.esm.js', 'default']
+    }),
+    new HtmlWebpackPlugin({
+      filename: './index.html',
+      template: 'index.html',
+      inject: true,
+      chunksSortMode: 'dependency'
     })
   ],
   resolve: {
@@ -88,17 +95,25 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    proxy: {
-      '*': {
-        target: 'https://www.cryptocompare.com/api/data/coinlist/',
-        changeOrigin: true,
-        secure: false,
-        cookieDomainRewrite: '',
-        onProxyReq: function (request, req, res) {
-          request.setHeader('origin', 'http://localhost:8080')
-        }
-      }
-    }
+    port: 8080,
+    // headers: {
+    //   'Access-Control-Allow-Origin': '*'
+    // },
+    // proxy: {
+    //   "/api": {
+    //     "target": 'https://cryptocompare.com',
+    //     "pathRewrite": { '^/api': '' }
+    //     // "changeOrigin": true,
+    //     // "secure": false,
+    //     // "origin": 'https://cryptocompare.com'
+    //   }
+    // }
+    headers: {
+	    "Access-Control-Allow-Origin": "*",
+	    "Access-Control-Allow-Credentials": "true",
+	    "Access-Control-Allow-Headers": "Content-Type, Authorization, x-id, Content-Length, X-Requested-With",
+	    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
+	}
   },
   performance: {
     hints: false
