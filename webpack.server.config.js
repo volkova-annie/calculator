@@ -14,8 +14,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: 'build.js',
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
+    filename: '[name].js'
   },
   module: {
     rules: [
@@ -116,6 +116,12 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: function (module) {
+        return module.context && module.context.indexOf('node_modules') !== -1
+      }
     })
   ])
 }

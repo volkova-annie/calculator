@@ -21,7 +21,9 @@
     "vue-chartjs": "^3.2.1",
     "vue-resource": "^1.5.0",
     "vue-router": "^3.0.1",
-    "vue-select": "^2.4.0"
+    "vue-select": "^2.4.0",
+    "vue-server-renderer": "^2.5.15",
+    "vue-ssr-webpack-plugin": "^3.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

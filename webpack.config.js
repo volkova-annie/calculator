@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: 'build.js'
+    filename: '[name].js'
   },
   module: {
     rules: [
@@ -40,7 +40,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [
-          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'src')
         ],
         exclude: /node_modules/
       },
@@ -66,7 +66,7 @@ module.exports = {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[ext]',
+          name: '[name].[ext]'
           // name: '[name].[ext]?[hash]',
           // useRelativePath: process.env.NODE_ENV === "production"
         }
@@ -87,7 +87,18 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true
+    noInfo: true,
+    proxy: {
+      '*': {
+        target: 'https://www.cryptocompare.com/api/data/coinlist/',
+        changeOrigin: true,
+        secure: false,
+        cookieDomainRewrite: '',
+        onProxyReq: function (request, req, res) {
+          request.setHeader('origin', 'http://localhost:8080')
+        }
+      }
+    }
   },
   performance: {
     hints: false
@@ -112,6 +123,12 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: function (module) {
+        return module.context && module.context.indexOf('node_modules') !== -1
+      }
     })
   ])
 }
