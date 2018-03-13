@@ -12,10 +12,10 @@ module.exports = {
   target: 'node',
   entry: './src/main.server.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './dist/'),
     publicPath: '/dist/',
-    libraryTarget: 'commonjs2',
-    filename: '[name].js'
+    filename: '[name].js',
+    libraryTarget: 'commonjs2'
   },
   module: {
     rules: [
@@ -77,31 +77,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('style.css'),
-    new CleanWebpackPlugin(['build']),
-    new webpack.ProvidePlugin({
-      Vue: ['vue/dist/vue.esm.js', 'default']
-    })
-  ],
-  resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js'
-    }
-  },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true
-  },
-  performance: {
-    hints: false
-  },
-  devtool: '#eval-source-map'
-}
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
     new VueSSRPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
@@ -117,11 +92,51 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: function (module) {
-        return module.context && module.context.indexOf('node_modules') !== -1
-      }
+    // new ExtractTextPlugin('style.css'),
+    new CleanWebpackPlugin(['build', 'dist']),
+    new webpack.ProvidePlugin({
+      Vue: ['vue/dist/vue.esm.js', 'default']
     })
-  ])
+  ],
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js'
+    }
+  },
+  // devServer: {
+  //   historyApiFallback: true,
+  //   noInfo: true
+  // },
+  performance: {
+    hints: false
+  },
+  devtool: '#eval-source-map'
 }
+
+// if (process.env.NODE_ENV === 'production') {
+//   module.exports.devtool = '#source-map'
+//   // http://vue-loader.vuejs.org/en/workflow/production.html
+//   module.exports.plugins = (module.exports.plugins || []).concat([
+//     new VueSSRPlugin(),
+//     new webpack.DefinePlugin({
+//       'process.env': {
+//         NODE_ENV: '"production"'
+//       }
+//     }),
+//     new webpack.optimize.UglifyJsPlugin({
+//       sourceMap: true,
+//       compress: {
+//         warnings: false
+//       }
+//     }),
+//     new webpack.LoaderOptionsPlugin({
+//       minimize: true
+//     }),
+//     new webpack.optimize.CommonsChunkPlugin({
+//       name: 'vendor',
+//       minChunks: function (module) {
+//         return module.context && module.context.indexOf('node_modules') !== -1
+//       }
+//     })
+//   ])
+// }
