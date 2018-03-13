@@ -93,29 +93,13 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    port: 8080
-    // proxy: {
-    //   "/api": {
-    //     "target": 'https://cryptocompare.com',
-    //     "pathRewrite": { '^/api': '' }
-    //     // "changeOrigin": true,
-    //     // "secure": false,
-    //     // "origin": 'https://cryptocompare.com'
-    //   },
-    //   "/data": {
-    //     "target": 'https://min-api.cryptocompare.com/',
-    //     "pathRewrite": { '^/api': '' }
-    //     // "changeOrigin": true,
-    //     // "secure": false,
-    //     // "origin": 'https://min-api.cryptocompare.com/'
-    //   }
-    // },
-    // headers: {
-    //   'Access-Control-Allow-Origin': '*',
-    //   'Access-Control-Allow-Credentials': 'true',
-    //   'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-id, Content-Length, X-Requested-With',
-    //   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    // }
+    port: 8080,
+    proxy: {
+      '/data/**': {
+        target: 'https://min-api.cryptocompare.com/',
+        secure: false
+      }
+    }
   },
   performance: {
     hints: false
