@@ -1,5 +1,5 @@
 <template lang="html">
-  <div>
+  <div class="wrapper">
     <main class="main">
       <div class="row">
         <input type="number" placeholder="Enter Amount to Convert" v-model="currencyAmount" min="0">
@@ -197,6 +197,10 @@ export default {
 
 <style lang="scss">
 
+.wrapper {
+  min-height: calc(100vh - 200px);
+}
+
 .main {
   position: relative;
   display: flex;
@@ -204,7 +208,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 40px 0;
+  padding: 60px 0;
 }
 
 .row {
