@@ -30,4 +30,27 @@ export default {
 
 <style lang="scss">
 
+input, select {
+  font-family: sans-serif;
+  border-radius: 4px;
+  border: solid 2px grey;
+  box-sizing: border-box;
+  outline-color: none;
+  height: 35px;
+  width: 375px;
+  padding: 0 15px;
+
+  &:focus {
+    border: solid 2px #0088CC;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: grey;
+  }
+
+  &::-ms-clear {
+    display: none;
+  }
+}
 </style>
