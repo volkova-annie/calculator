@@ -16,5 +16,4 @@ npm run build
 
 # for ssr
 npm run build
-node ./server.js
 ```
