@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '.', dir)
@@ -14,7 +15,9 @@ module.exports = {
     path: process.env.NODE_ENV === 'production'
       ? path.resolve(__dirname, './dist/dist/')
       : path.resolve(__dirname, './dist/'),
-    publicPath: '/dist/',
+    publicPath: process.env.NODE_ENV === 'production'
+      ? '/dist/dist/'
+      : '/dist/',
     filename: process.env.NODE_ENV === 'production'
       ? '[name].[hash:8].js'
       : '[name].js'
@@ -83,7 +86,8 @@ module.exports = {
     new CleanWebpackPlugin(['build']),
     new webpack.ProvidePlugin({
       Vue: ['vue/dist/vue.esm.js', 'default']
-    })
+    }),
+    new VueSSRClientPlugin()
   ],
   resolve: {
     alias: {

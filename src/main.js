@@ -1,17 +1,8 @@
-import Vue from 'vue'
-import 'normalize.css'
-import './styles/application.scss'
-import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
-import App from './App.vue'
-import router from './router'
+import { createApp } from './app'
 
-Vue.use(VueResource)
-Vue.use(VueRouter)
+// Специфичная для клиента логика загрузки...
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  render: h => h(App)
-})
+const { app } = createApp()
+
+// предполагается, что у корневого элемента в шаблоне App.vue есть элемент с `id="app"`
+app.$mount('#app')
